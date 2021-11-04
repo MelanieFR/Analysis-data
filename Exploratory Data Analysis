@@ -157,12 +157,73 @@ plt.xticks(rotation= 90)
 fig.colorbar(im)
 plt.show()
 
+# Calculate the Pearson Correlation Coefficient and P-value of variables using stats.pearsonr( )
+from scipy import stats
+
 # The Pearson Correlation measures the linear dependence between two variables X and Y.
 # 1: Perfect positive linear correlation
 # -1: Perfect negative linear correlation.
 
-# The P-value is the probability value that the correlation between these two variables is statistically significant.
+# The P-value is the probability value that the correlation between two variables is statistically significant.
+# P-value < 0.001: Strong certainty in the results
 
+# Calculate the Pearson Correlation Coefficient and P-value of 'wheel-base' and 'price':
+pearson_coef, p_value= stats.pearsonr(df['wheel-base'], df['price'])
+print("The Pearson Coefficient is:", pearson_coef, " with a P-value of P=", p_value)
+
+# The linear Relationship between Price and Wheel base is not very strong (Pearson coef (~0.59)) while the correlation between price and base wheels is statistically strong (P-value< 0.01)
+
+# relationship between 'wheel-base' and 'price'
+sns.regplot(x = 'wheel-base', y= 'price', data= df)
+plt.ylim(0,)
+
+# Pearson Correlation Coefficient and P-value:
+# Horsepower vs. Price
+pearson_coef, p_value= stats.pearsonr(df['horsepower'], df['price'])
+print("The Pearson Coefficient is:", pearson_coef, " with a P-value of P=", p_value)
+
+# Length vs. Price
+pearson_coef, p_value= stats.pearsonr(df['length'], df['price'])
+print("The Pearson Coefficient is:", pearson_coef, " with a P-value of P=", p_value)
+
+# Width vs. Price
+pearson_coef, p_value= stats.pearsonr(df['width'], df['price'])
+print("The Pearson Coefficient is:", pearson_coef, " with a P-value of P=", p_value)
+
+# Curb-Weight vs. Price
+pearson_coef, p_value = stats.pearsonr(df['curb-weight'], df['price'])
+print("The Pearson Coefficient is:", pearson_coef, " with a P-value of P=", p_value)
+
+# City-mpg vs. Price
+pearson_coef, p_value= stats.pearsonr(df['city-mpg'], df['price'])
+print("The Pearson Coefficient is:", pearson_coef, " with a P-value of P=", p_value)
+
+# ANOVA: Analysis of Variance (F-test and P-value) with stats.f_oneway( )
+# The Analysis of Variance (ANOVA) is a statistical method used to test whether there are significant differences between the means of two or more groups
+grouped_test2 = df_gptest[['drive-wheels', 'price']].groupby(['drive-wheels'])
+print(grouped_test2.head())
+print(df_gptest)
+
+# We can obtain the values of the method group using the method "get_group".
+grouped_test2.get_group('4wd')['price']
+
+# Use the function 'f_oneway' in the module 'stats' to obtain the F-test score and P-value.
+f_val, p_val = stats.f_oneway(grouped_test2.get_group('fwd')['price'], grouped_test2.get_group('rwd')['price'], grouped_test2.get_group('4wd')['price'])
+print("ANOVA results: F=", f_val, ", P =", p_val)
+
+# This is a great result with a large F-test score showing a strong correlation and a P-value of almost 0 implying almost certain statistical significance.
+
+# fwd and rwd
+f_val, p_val = stats.f_oneway(grouped_test2.get_group('fwd')['price'], grouped_test2.get_group('rwd')['price'])
+print("ANOVA results: F=", f_val, ", P =", p_val)
+
+# 4wd and rwd
+f_val, p_val = stats.f_oneway(grouped_test2.get_group('4wd')['price'], grouped_test2.get_group('rwd')['price'])
+print("ANOVA results: F=", f_val, ", P =", p_val)
+
+# 4wd and fwd
+f_val, p_val = stats.f_oneway(grouped_test2.get_group('4wd')['price'], grouped_test2.get_group('fwd')['price'])
+print("ANOVA results: F =", f_val, ", P =", p_val)
 
 
 
